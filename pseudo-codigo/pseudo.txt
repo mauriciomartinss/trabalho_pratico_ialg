@@ -1,4 +1,4 @@
-begin
+begin{}
 
 funcao cadastra_cliente
 	escrever "nome"
