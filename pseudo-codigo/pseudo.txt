@@ -4,7 +4,7 @@ funcao cadastra_cliente
 	escrever "nome"
 	ler novo_cliente.nome;
 	escrver "cpf"
-	ler novo_cliente.cpf;
+	ler novo_cliente.cpf
 	novo_cliente.id = lista_clientes[size.lista_clientes]-1
 	novo_cliente.saldo_devedor = 0;
 
