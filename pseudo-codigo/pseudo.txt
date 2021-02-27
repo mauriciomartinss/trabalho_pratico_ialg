@@ -1,23 +1,26 @@
 begin{}
 
-funcao cadastra_cliente
+funcao ordenacao() { //talvaz haja mais de uma
+} 
+funcao imprime() { //essa e a mais simples
+}
+
+funcao busca() { //provavelmente vai ser a de busca binária (dai precisa tá ordenado certinho(id))
+}
+funcao cadastra_cliente(cliente vetorClientes[]) {
 	escrever "nome"
 	ler novo_cliente.nome;
-	escrver "cpf"
+	escrever "cpf"
 	ler novo_cliente.cpf
 	novo_cliente.id = lista_clientes[size.lista_clientes]-1
 	novo_cliente.saldo_devedor = 0;
-
-
-funcao main
-
-struct produtos{
+}
+struct produto {
 	int qtd;
 	string nome;
 	int id;	
 }
-
-struct cllientes{
+struct cliente {
 	string nome;
 	int cpf;
 	int saldo_devedor;
@@ -29,103 +32,96 @@ struct pagar_cartao{
 	string nome;
 	int cvv;
 }
-
-struct compras{
+struct compra {
 	int id;
-	produtos produto[];
-	clientes cliente;
+	produto produtos[];
+	cliente clientes;
 	string pagamento;
-	string pagamento;
+	string pagamento; //pq dois pagamentos?
 }
 
+funcao main {
 
+	cliente lista_clientes[];
+	cliente novo_cliente; //eu ainda não entendi essa parte
+	produto produtos[];
+	compra lista_compras[];
+	cartao pagar_cartao;
+	float valor_recebido;
 
-clientes lista_clientes[];
-clientes novo_cliente;
-produtos produto[];
-compras lista_compras;
-cartaopagar_cartao;
-float valor_recebido;
-
-switch:
-	1-passar compras
-	2-exibir lista de clientes cadastrados
-	3-cadastrar ciente
-	4-historico de compras
-
-case 1:
-	while produto.qtd != 0
-		escrever "Qtd do produto"
-		ler produto[].qtd;
-		escrever "Nome do produto"
-		ler produto[].nome
-		escrever "id do produto(codigo de barras)
-		ler produto[].id
-
-	escreva "método de pagamento"
 	switch:
-	
-	1-cartao
-	2-à vista
-	3-anotar
+		escrever 1-passar compras;
+		escrever 2-exibir lista de clientes cadastrados;
+		escrever 3-cadastrar ciente;
+		escrever 4-historico de compras;
 
 	case 1:
-		escrever "numero do cartao"
-		ler cartao.n
-		escrever "nome do titular"
-		ler cartao.nome
-		escrever "codigo de segurança"
-		ler cvv
+		while produto.qtd != 0
+			escrever "Qtd do produto"
+			ler produto[].qtd;
+			escrever "Nome do produto"
+			ler produto[].nome
+			escrever "id do produto(codigo de barras)
+			ler produto[].id
+		escreva "método de pagamento"
+		switch:
+		escrever	1-cartao
+		escrever 2-à vista
+		escrever 3-anotar
+
+		case 1:
+			escrever "numero do cartao"
+			ler cartao.n
+			escrever "nome do titular"
+			ler cartao.nome
+			escrever "codigo de segurança"
+			ler cvv
+			
+			lista_compras.pagamento = "cartao"
+		case 2:
+			escrever "valor da compra" + *Valor total*
+			escrever "valor recebido" 
+			ler valor_recebido
+			escrever "troco: " + valor_recebido - *Valor total*
+
+			lista_compras.pagamento = "a vista"
+		case 3:
+			escrever "ja é cliente?"
+			se sim
+				escrever "nome"
+				*pesquisar nome na lista de clientes*
+			senao
+				funcao cadastra_cliente();
+			
+			lista_compra.pagamento = "a prazo"
+
+			lista_clientes[id_do_cliente].saldo_devedor = lista_clientes[id_do_cliente].saldo_devedor + *Valor total*
 		
-		lista_compras.pagamento = "cartao"
+	break
 	case 2:
-		escrever "valor da compra" + *Valor total*
-		escrever "valor recebido" 
-		ler valor_recebido
-		escrever "troco: " + valor_recebido - *Valor total*
+		para int i=0; i<size.lista_clientes; i++
+			escrever lista_cliente[].id
+			escrever lista_clientes[].nome
+			escrever lista_clientes[].cpf
+			escrever lista_clientes[].saldo_devedor
 
-		lista_compras.pagamento = "a vista"
+	break
 	case 3:
-		escrever "ja é cliente?"
-		se sim
-			escrever "nome"
-			*pesquisar nome na lista de clientes*
-		senao
-			funcao cadastra_cliente();
-		
-		lista_compra.pagamento = "a prazo"
-		
+		funcao cadastra_cliente();
+	break
+	case 4:
+		para int i=0; i<100; i++
+			escrever lista_compras.id
+			para int j=0; j < size.lista_compras.produto
+				escrever lista_compras.produto.qtd
+				escrever lista_compras.produto.id
+				escrever lista_compras.produto.nome 
+			
+			escrever lista_compras.cliente.nome
+			escrever lista_compras.pagamento;
 
-
-
-	lista_clientes[id_do_cliente].saldo_devedor = lista_clientes[id_do_cliente].saldo_devedor + *Valor total*
-	
-		
-
-break
-case 2:
-	para int i=0; i<size.lista_clientes; i++
-		escrever lista_cliente[].id
-		escrever lista_clientes[].nome
-		escrever lista_clientes[].cpf
-		escrever lista_clientes[].saldo_devedor
-
-break
-case 3:
-	funcao cadastra_cliente();
-break
-case 4:
-	para int i=0; i<100; i++
-		escrever lista_compras.id
-		para int j=0; j < size.lista_compras.produto
-			escrever lista_compras.produto.qtd
-			escrever lista_compras.produto.id
-			escrever lista_compras.produto.nome 
-		
-		escrever lista_compras.cliente.nome
-		escrever lista_compras.pagamento;
-
-end;
+	end;
+}
 		
 
 	
