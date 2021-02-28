@@ -41,9 +41,9 @@ struct compra {
 }
 
 funcao main {
-
-	cliente lista_clientes[];
-	cliente novo_cliente; //eu ainda não entendi essa parte
+	//declaração de variaveis
+	cliente lista_clientes[]; //acho que não precisa
+	cliente novo_cliente[];
 	produto produtos[];
 	compra lista_compras[];
 	cartao pagar_cartao;
@@ -52,7 +52,7 @@ funcao main {
 	switch:
 		escrever 1-passar compras;
 		escrever 2-exibir lista de clientes cadastrados;
-		escrever 3-cadastrar ciente;
+		escrever 3-cadastrar cliente;
 		escrever 4-historico de compras;
 
 	case 1:
@@ -65,45 +65,47 @@ funcao main {
 			ler produto[].id
 		escreva "método de pagamento"
 		switch:
-		escrever	1-cartao
-		escrever 2-à vista
-		escrever 3-anotar
+			escrever 1-cartao
+			escrever 2-à vista
+			escrever 3-anotar
+			case 1:
+				escrever "numero do cartao"
+				ler cartao.n
+				escrever "nome do titular"
+				ler cartao.nome
+				escrever "codigo de segurança"
+				ler cvv
+				
+				lista_compras.pagamento = "cartao"
+			case 2: //a vista pode ser no cartão também
+				escrever "valor da compra" + *Valor total*
+				escrever "valor recebido" 
+				ler valor_recebido
+				escrever "troco: " + valor_recebido - *Valor total*
 
-		case 1:
-			escrever "numero do cartao"
-			ler cartao.n
-			escrever "nome do titular"
-			ler cartao.nome
-			escrever "codigo de segurança"
-			ler cvv
+				lista_compras.pagamento = "a vista"
+			case 3:
+				escrever "ja é cliente?"
+				se sim (processaSimOuNao() == 1)//processaSimOuNao() retorna 0 ou 1 (caso haja outro caso de sim ou não)
+					escrever "nome"
+					*pesquisar nome na lista de clientes*
+				senao
+					funcao cadastra_cliente();
+				
+				lista_compra.pagamento = "a prazo"
+
+				lista_clientes[id_do_cliente].saldo_devedor = lista_clientes[id_do_cliente].saldo_devedor + *Valor total*
 			
-			lista_compras.pagamento = "cartao"
-		case 2:
-			escrever "valor da compra" + *Valor total*
-			escrever "valor recebido" 
-			ler valor_recebido
-			escrever "troco: " + valor_recebido - *Valor total*
-
-			lista_compras.pagamento = "a vista"
-		case 3:
-			escrever "ja é cliente?"
-			se sim
-				escrever "nome"
-				*pesquisar nome na lista de clientes*
-			senao
-				funcao cadastra_cliente();
-			
-			lista_compra.pagamento = "a prazo"
-
-			lista_clientes[id_do_cliente].saldo_devedor = lista_clientes[id_do_cliente].saldo_devedor + *Valor total*
-		
-	break
+			break
 	case 2:
+		
+		imprime(lista_clientes, lista_clientes.length)
+		
 		para int i=0; i<size.lista_clientes; i++
-			escrever lista_cliente[].id
-			escrever lista_clientes[].nome
-			escrever lista_clientes[].cpf
-			escrever lista_clientes[].saldo_devedor
+			escrever lista_clientes[i].id
+			escrever lista_clientes[i].nome
+			escrever lista_clientes[i].cpf
+			escrever lista_clientes[i].saldo_devedor
 
 	break
 	case 3:
