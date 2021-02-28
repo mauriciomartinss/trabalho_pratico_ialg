@@ -1,3 +1,3 @@
 # trabalho_pratico_ialg
 *fluxograma*
-github.com/mauriciomartinss/trabalho_pratico_ialg/blob/master/fluxograma/Algoritmo_Trabalho_Pratico.jpeg
+[My image](mauriciomartinss.github.com/trabalho_pratico_ialg/fluxograma/Algoritmo-Trabalho-Pratico.jpeg)
