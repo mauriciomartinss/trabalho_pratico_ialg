@@ -1,10 +1,9 @@
 #include <iostream>
 using namespace std;
 //usei o pseudo código pra criar preencher os "objetos", mas acho que ao longo desenvolvimento vai precisar mudar kkkk
-struct produto {
+struct precoProduto {
     int qtd;
-    string nome;
-    int id;
+    float valor;
 };
 struct cliente {
     string nome;
@@ -19,7 +18,7 @@ struct cartao {
 };
 struct compra {
     int id;
-    // produto produtos[]; >>> eu acho que nóis pode tirar isso, eu acho que vai ficar complicado. mas é pq eu tô em dúvida também. uheuheuue
+    precoProduto produtos[];
     cliente clientes[100];
     string pagamento;
 };
@@ -38,7 +37,21 @@ int menu_selecao() {
     return acao;
 }
 
-int passar_Compra() {
+int passar_Compra(compra historico[]) {
+    compra compraAtual; //variavel que recebe tudo
+    int i = 0;
+    while(compraAtual.id != 0) {
+        cin>>compraAtual.id;
+        while(compraAtual.produtos[i].qtd != 0) {
+            cin>>compraAtual.produtos[i].qtd;
+            if (compraAtual.produtos[i].qtd != 0) {
+                cin>>compraAtual.produtos[i].valor;
+            }
+            cin>>compraAtual.pagamento; //nao terminei ainda, fiz algumas modificoes em duas estruturas
+        }
+        i++;
+    }
+    
     int teste = 0;
     return teste;
 }
