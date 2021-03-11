@@ -65,7 +65,10 @@ int passar_Compra(compra historico[])
         i++;
     }*/
 
-    cout << compraAtual.produtos[0].qtd << "Se nao deseja adicionar mais produto, digite 0";
+    cout << "Informe a quantidade de um tipo de produto.  "
+         << "Se nao deseja adicionar mais produto, digite 0";
+
+    cin >> compraAtual.produtos[0].qtd;
 
     if (compraAtual.produtos[0].qtd <= 0)
     {
@@ -84,8 +87,7 @@ int passar_Compra(compra historico[])
 
             valorTotal = valorTotal + (compraAtual.produtos[i].valor * compraAtual.produtos[i].qtd);
 
-            cout
-                << compraAtual.produtos[i + 1].qtd << "Se nao deseja adicionar mais algum produto, digite 0";
+            cout << compraAtual.produtos[i + 1].qtd << "Se nao deseja adicionar mais algum produto, digite 0";
 
             i++;
         }
