@@ -15,12 +15,6 @@ struct cliente
     int saldoDevedor;
     int id;
 };
-struct cartao
-{
-    int n;
-    string nome;
-    int cvv;
-};
 struct compra
 {
     int id;
@@ -37,27 +31,28 @@ void menuSelecao(int &acao)
          << "   3- cadastrar cliente" << endl
          << "   4- historico de compras" << endl
          << "   5- sair" << endl
-         << "   >";
+         << "   > ";
 
     cin >> acao;
 }
-
-int passar_Compra()
+//comeco passar
+void passar_Compra()
 {
     compra compraAtual; //variavel que recebe tudo
-    int i = 0;
+    int i = 0, pagamento, pgtCartao, valorRecebido, troco;
     float valorTotal = 0;
-    cout << "Informe a quantidade de um tipo de produto.  "
-         << "Se nao deseja adicionar mais produto, digite 0";
+
+    cout << "Informe a quantidade de um tipo de produto: ";
+
     cin >> compraAtual.produtos[0].qtd;
 
     if (compraAtual.produtos[0].qtd <= 0)
     {
-        //encerra a função;
+        return;
     }
     else
     {
-        while (compraAtual.produtos[i].qtd >= 0)
+        while (compraAtual.produtos[i].qtd > 0)
         {
             cout << "nome do produto: ";
             cin >> compraAtual.produtos[i].nome;
@@ -67,7 +62,7 @@ int passar_Compra()
 
             valorTotal = valorTotal + (compraAtual.produtos[i].valor * compraAtual.produtos[i].qtd);
 
-            cout << "Informe a quantidade do produto. Se nao deseja adicionar mais algum produto, digite 0";
+            cout << "Informe a quantidade do produto. Se nao deseja adicionar mais algum produto, digite 0: ";
 
             cin >> compraAtual.produtos[i + 1].qtd;
 
@@ -76,22 +71,54 @@ int passar_Compra()
     }
 
     cout << "O valor total da compra é de " << valorTotal << "." << endl
-         <<
-        //carrega as opcoes de pagamento disponiveis e faz um switch ou if para a resposta do usuario
-        endl;
+         << "Qual a forma de pagamento? " << endl
+         << "1- cartao" << endl
+         << "2- dinheiro" << endl
+         << "3- à prazo" << endl;
+    cin >> pagamento;
 
-    int teste = 0;
-    return teste;
+    if (pagamento == 1)
+    {
+        cout << "1- à vista" << endl
+             << "parcelado" << endl;
+        cin >> pgtCartao;
+
+        if (pgtCartao == 1)
+        {
+            cout << "Confirmado";
+        }
+        else if (pgtCartao == 2)
+        {
+            cout << "quantas vezes?" << endl
+                 << "Confirmado";
+        }
+    }
+    else if (pagamento == 2)
+    {
+        cout << "valor recebido: ";
+        cin >> valorRecebido;
+        troco = valorRecebido - valorTotal;
+
+        cout << endl
+             << "troco: " << troco << endl;
+    }
+    else if (pagamento == 3)
+    {
+        //arquivo com lista de clientes;
+        //  verifica_cliente();
+        //  senao
+        //  cadastrar_cliente();
+    }
 }
 
-void exibir_Clientes()
+/*void exibir_clientes()
 {
 }
 
-void cadastrar_Cliente()
+void cadastrar_cliente()
 {
 }
-
+*/
 void exibeHistorico(compra historico[])
 {
     int i = 0;
@@ -109,9 +136,7 @@ void verifica(int acao)
 {
     if (acao == 1)
     {
-        cout << "passar_Compra"
-             << " " << acao << endl;
-        // passar_Compra();
+        passar_Compra();
     }
     else if (acao == 2)
     {
@@ -142,7 +167,7 @@ int main()
     int acao;
     bool sair = false;
     while (!sair)
-    {
+    { //responsavel pelo menu
         menuSelecao(acao);
         if (acao == 5)
         {
