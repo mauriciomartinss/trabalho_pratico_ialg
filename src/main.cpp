@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 //Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
-
 struct produto
 {
     string nome;
@@ -32,7 +31,6 @@ void menuSelecao(int &acao)
          << "   4- historico de compras" << endl
          << "   5- sair" << endl
          << "   > ";
-
     cin >> acao;
 }
 //comeco passar
@@ -48,7 +46,7 @@ void passar_Compra()
 
     if (compraAtual.produtos[0].qtd <= 0)
     {
-        return;
+        return; //vamo ver depois hueuheuheu
     }
     else
     {
@@ -111,25 +109,28 @@ void passar_Compra()
     }
 }
 
-/*void exibir_clientes()
+void exibir_clientes()
 {
 }
 
-void cadastrar_cliente()
+void cadastrar_cliente(cliente &dados)
 {
+    cout << "nome: " << endl;
+    cin >> dados.nome;
+    cout << "cpf: " << endl;
+    cin >> dados.cpf;
 }
-*/
 void exibeHistorico(compra historico[])
 {
-    int i = 0;
-    while (i < 10 and historico[i].id != 0)
+    /*int i = 0;
+    while (i < 10 and historico[i].id >= 0)
     {
         cout << historico[i].id << endl
              << historico[i].clientes[i].id << " " << historico[i].clientes[i].saldoDevedor << endl
              << historico[i].pagamento << endl;
         i++;
     }
-    cout << endl;
+    cout << endl;*/
 }
 
 void verifica(int acao)
@@ -150,6 +151,8 @@ void verifica(int acao)
     }
     else if (acao == 4)
     {
+        compra historico[10];
+        exibeHistorico(historico);
         cout << "exibe historico"
              << " " << acao << endl;
         //exibeHistorico(historico);
@@ -166,6 +169,7 @@ int main()
 {
     int acao;
     bool sair = false;
+
     while (!sair)
     { //responsavel pelo menu
         menuSelecao(acao);
@@ -178,5 +182,6 @@ int main()
             verifica(acao);
         }
     }
+
     return 0;
 }
