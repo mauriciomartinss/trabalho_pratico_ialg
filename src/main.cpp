@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
-//usei o pseudo código pra criar preencher os "objetos", mas acho que ao longo desenvolvimento vai precisar mudar kkkk
+//Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
+
 struct produto
 {
     string nome;
@@ -20,17 +21,17 @@ struct cartao
     string nome;
     int cvv;
 };
+
 struct compra
 {
     int id;
-    produto produtos[];
+    produto produtos[100];
     cliente clientes[100];
     string pagamento;
 };
 
-int menu_selecao()
+void menuSelecao(int &acao)
 {
-    int acao;
     cout << "Escolha uma acao (digite apenas o numero): " << endl
          << "   1- Passar Compras" << endl
          << "   2- Exibir clientes cadastrados" << endl
@@ -38,36 +39,17 @@ int menu_selecao()
          << "   4- historico de compras" << endl
          << "   5- sair" << endl
          << "   >";
-    cin >> acao;
-    cout << endl;
 
-    return acao;
+    cin >> acao;
 }
 
-int passar_Compra(compra historico[])
+int passar_Compra()
 {
     compra compraAtual; //variavel que recebe tudo
     int i = 0;
     float valorTotal = 0;
-
-    /*while (compraAtual.produto[i].qtd != 0)
-    {
-        cin >> compraAtual.id;
-        while (compraAtual.produtos[i].qtd != 0)
-        {
-            cin >> compraAtual.produtos[i].qtd;
-            if (compraAtual.produtos[i].qtd != 0)
-            {
-                cin >> compraAtual.produtos[i].valor;
-            }
-            cin >> compraAtual.pagamento; //nao terminei ainda, fiz algumas modificoes em duas estruturas
-        }
-        i++;
-    }*/
-
     cout << "Informe a quantidade de um tipo de produto.  "
          << "Se nao deseja adicionar mais produto, digite 0";
-
     cin >> compraAtual.produtos[0].qtd;
 
     if (compraAtual.produtos[0].qtd <= 0)
@@ -76,7 +58,6 @@ int passar_Compra(compra historico[])
     }
     else
     {
-
         while (compraAtual.produtos[i].qtd >= 0)
         {
             cout << "nome do produto: ";
@@ -87,7 +68,9 @@ int passar_Compra(compra historico[])
 
             valorTotal = valorTotal + (compraAtual.produtos[i].valor * compraAtual.produtos[i].qtd);
 
-            cout << compraAtual.produtos[i + 1].qtd << "Se nao deseja adicionar mais algum produto, digite 0";
+            cout << "Informe a quantidade do produto. Se nao deseja adicionar mais algum produto, digite 0";
+
+            cin >> compraAtual.produtos[i + 1].qtd;
 
             i++;
         }
@@ -95,8 +78,8 @@ int passar_Compra(compra historico[])
 
     cout << "O valor total da compra é de " << valorTotal << "." << endl
          <<
-         //carrega as opcoes de pagamento disponiveis e faz um switch ou if para a resposta do usuario
-         << endl;
+        //carrega as opcoes de pagamento disponiveis e faz um switch ou if para a resposta do usuario
+        endl;
 
     int teste = 0;
     return teste;
@@ -112,7 +95,7 @@ void cadastrar_Cliente()
 
 void exibeHistorico(compra historico[])
 {
-    int i = 0;
+    /*int i = 0;
     while (i < 10 and historico[i].id != 0)
     {
         cout << historico[i].id << endl
@@ -120,24 +103,21 @@ void exibeHistorico(compra historico[])
              << historico[i].pagamento << endl;
         i++;
     }
-    cout << endl;
+    cout << endl;*/
 }
 
 int main()
 {
     compra historico[10]; //o histórico já tava definido que seria no máximo dez, né?
 
-    int acao;
-    /*  mudei pra menu selecao (antes era exibir acoes) pq, além de mostrar as acoes, ele também retorna 
-        um inteiro que recebeu de entrada como acao. daí achei que seria melhor mudar o nome. mas eu acho que
-        a gente pode melhorar ainda mais esses nomes hueuheuheuhuhe
-    */
-    bool sair = false;
-    while (!sair)
-    {
-        acao = menu_selecao();
+    int acao = 0;
 
-        if (acao == 1) //Hélio: acho que seria melhor usar switch;
+    menuSelecao(acao);
+
+    while (acao >= 1 and acao < 5) //tem que arrumar depois
+    {
+        menuSelecao(acao);
+        if (acao == 1)
         {
             passar_Compra();
         }
@@ -153,12 +133,9 @@ int main()
         {
             exibeHistorico(historico);
         }
-        else if (acao == 5)
-        {
-            sair = true;
-        }
         else
-        { //acho que assim eh melhor, se não for, depois muda :)
+        {
+            menuSelecao(acao);
             cout << "[ERRO] digite um valor válido! (valores de 1 a 5). " << endl
                  << endl;
         }
