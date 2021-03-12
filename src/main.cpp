@@ -21,7 +21,6 @@ struct cartao
     string nome;
     int cvv;
 };
-
 struct compra
 {
     int id;
@@ -95,7 +94,7 @@ void cadastrar_Cliente()
 
 void exibeHistorico(compra historico[])
 {
-    /*int i = 0;
+    int i = 0;
     while (i < 10 and historico[i].id != 0)
     {
         cout << historico[i].id << endl
@@ -103,43 +102,56 @@ void exibeHistorico(compra historico[])
              << historico[i].pagamento << endl;
         i++;
     }
-    cout << endl;*/
+    cout << endl;
+}
+
+void verifica(int acao)
+{
+    if (acao == 1)
+    {
+        cout << "passar_Compra"
+             << " " << acao << endl;
+        // passar_Compra();
+    }
+    else if (acao == 2)
+    {
+        cout << "exibir_cliente" << endl;
+        //exibir_Clientes();
+    }
+    else if (acao == 3)
+    {
+        cout << "cadastra cliente" << endl;
+        //cadastrar_Cliente();
+    }
+    else if (acao == 4)
+    {
+        cout << "exibe historico"
+             << " " << acao << endl;
+        //exibeHistorico(historico);
+    }
+    else
+    {
+        //acho que assim eh melhor, se não for, depois muda :)
+        cout << "[ERRO] digite um valor válido! (valores de 1 a 5). " << endl
+             << endl;
+    }
 }
 
 int main()
 {
-    compra historico[10]; //o histórico já tava definido que seria no máximo dez, né?
-
-    int acao = 0;
-
-    menuSelecao(acao);
-
-    while (acao >= 1 and acao < 5) //tem que arrumar depois
+    int acao;
+    bool sair = false;
+    while (!sair)
     {
         menuSelecao(acao);
-        if (acao == 1)
+        if (acao == 5)
         {
-            passar_Compra();
-        }
-        else if (acao == 2)
-        {
-            exibir_Clientes();
-        }
-        else if (acao == 3)
-        {
-            cadastrar_Cliente();
-        }
-        else if (acao == 4)
-        {
-            exibeHistorico(historico);
+            sair = true;
         }
         else
         {
-            menuSelecao(acao);
-            cout << "[ERRO] digite um valor válido! (valores de 1 a 5). " << endl
-                 << endl;
+            verifica(acao);
         }
     }
-
     return 0;
 }
