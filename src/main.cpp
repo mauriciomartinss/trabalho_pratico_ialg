@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 //Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
 struct produto
@@ -13,6 +14,7 @@ struct cliente
     int cpf;
     int saldoDevedor;
     int id;
+    int numCompras;
 };
 struct compra
 {
@@ -22,19 +24,19 @@ struct compra
     string pagamento;
 };
 
-void menuSelecao(int &acao)
+//void menuSelecao(int &acao)
+void menuSelecao()
 {
     cout << "Escolha uma acao (digite apenas o numero): " << endl
          << "   1- Passar Compras" << endl
          << "   2- Exibir clientes cadastrados" << endl
          << "   3- cadastrar cliente" << endl
-         << "   4- historico de compras" << endl
-         << "   5- sair" << endl
+         << "   4- sair" << endl
          << "   > ";
-    cin >> acao;
+    // cin >> acao;
 }
-//comeco passar
-void passar_Compra()
+
+void passarCompra()
 {
     compra compraAtual; //variavel que recebe tudo
     int i = 0, pagamento, pgtCartao, valorRecebido, troco;
@@ -46,7 +48,7 @@ void passar_Compra()
 
     if (compraAtual.produtos[0].qtd <= 0)
     {
-        return; //vamo ver depois hueuheuheu
+        return;
     }
     else
     {
@@ -109,79 +111,120 @@ void passar_Compra()
     }
 }
 
-void exibir_clientes()
+void interfaceCliente()
 {
+    cout << "   1- Cadastrar cliente" << endl
+         << "   2- Excluir cliente" << endl
+         << "   3- Alterar dado de cliente" << endl
+         << "   4- Retornar ao menu principal" << endl
+         << "   >";
 }
 
-void cadastrar_cliente(cliente &dados)
+void cadastrarCliente(cliente &dados)
 {
     cout << "nome: " << endl;
     cin >> dados.nome;
     cout << "cpf: " << endl;
     cin >> dados.cpf;
 }
-void exibeHistorico(compra historico[])
+
+void removerClientes()
 {
-    /*int i = 0;
-    while (i < 10 and historico[i].id >= 0)
-    {
-        cout << historico[i].id << endl
-             << historico[i].clientes[i].id << " " << historico[i].clientes[i].saldoDevedor << endl
-             << historico[i].pagamento << endl;
-        i++;
-    }
-    cout << endl;*/
 }
 
-void verifica(int acao)
+void alterarCliente()
 {
+}
+
+void exibirClientes()
+{
+    bool sair = false;
+    int opcaoCliente;
+
+    while (!sair)
+    {
+        interfaceCliente();
+        cin >> opcaoCliente;
+        if (opcaoCliente >= 1 and opcaoCliente <= 4)
+        {
+            if (opcaoCliente == 4)
+            {
+                sair = true;
+            }
+            else
+            {
+                if (opcaoCliente == 1)
+                {
+                    cout << "caso 1";
+                    //cadastrarCliente();
+                }
+                else if (opcaoCliente == 2)
+                {
+                    cout << "caso 2";
+                    //removerClientes();
+                }
+                else if (opcaoCliente == 3)
+                {
+                    cout << " caso 3";
+                    //alterarCliente();
+                }
+            }
+        }
+        else
+        {
+            cout << "[ERRO] digite um valor valido! (valores de 1 a 4). " << endl;
+            cin.clear();  //Limpa a flag de erro quando há falha no parse do valor entrado
+            cin.ignore(); //Limpa o buffer
+        }
+    }
+}
+
+void verificar(int acao)
+{
+
     if (acao == 1)
     {
-        passar_Compra();
+        passarCompra();
     }
     else if (acao == 2)
     {
-        cout << "exibir_cliente" << endl;
-        //exibir_Clientes();
+        exibirClientes();
     }
     else if (acao == 3)
     {
-        cout << "cadastra cliente" << endl;
-        //cadastrar_Cliente();
-    }
-    else if (acao == 4)
-    {
-        compra historico[10];
-        exibeHistorico(historico);
-        cout << "exibe historico"
-             << " " << acao << endl;
-        //exibeHistorico(historico);
-    }
-    else
-    {
-        //acho que assim eh melhor, se não for, depois muda :)
-        cout << "[ERRO] digite um valor válido! (valores de 1 a 5). " << endl
-             << endl;
+        // cadastrarCliente();
     }
 }
 
 int main()
 {
-    int acao;
+    int acao = 0;
     bool sair = false;
 
     while (!sair)
-    { //responsavel pelo menu
-        menuSelecao(acao);
-        if (acao == 5)
+    {
+        menuSelecao();
+        cin >> acao;
+        cout << acao << endl;
+        if (acao >= 1 and acao <= 5)
         {
-            sair = true;
+            if (acao == 5)
+            {
+                sair = true;
+            }
+            else
+            {
+                verificar(acao);
+            }
         }
         else
         {
-            verifica(acao);
+            cout << "[ERRO] digite um valor valido! (valores de 1 a 5). " << endl;
+            cin.clear();  //Limpa a flag de erro quando há falha no parse do valor entrado
+            cin.ignore(); //Limpa o buffer
         }
-    }
+
+    } //fim do while
 
     return 0;
 }
