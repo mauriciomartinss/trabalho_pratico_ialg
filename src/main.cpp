@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 //Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
 struct produto
@@ -13,18 +14,17 @@ struct cliente
     string nome;
     int cpf;
     int saldoDevedor;
-    int id;
-    int numCompras;
+    int valorCompras;
 };
 struct compra
 {
-    int id;
     produto produtos[100];
-    cliente clientes[100];
+    cliente clientes;
     string pagamento;
 };
 
 //void menuSelecao(int &acao)
+
 void menuSelecao()
 {
     cout << "Escolha uma acao (digite apenas o numero): " << endl
@@ -39,6 +39,7 @@ void menuSelecao()
 void passarCompra()
 {
     compra compraAtual; //variavel que recebe tudo
+    cliente cliente_atual;
     int i = 0, pagamento, pgtCartao, valorRecebido, troco;
     float valorTotal = 0;
 
@@ -72,15 +73,20 @@ void passarCompra()
 
     cout << "O valor total da compra é de " << valorTotal << "." << endl
          << "Qual a forma de pagamento? " << endl
-         << "1- cartao" << endl
-         << "2- dinheiro" << endl
-         << "3- à prazo" << endl;
+         << "1- Cartao" << endl
+         << "2- Dinheiro" << endl
+         << "3- À prazo" << endl;
     cin >> pagamento;
+
+    //  arquivo com lista de clientes;
+    //  verifica_cliente();
+    //  senao
+    //  cadastrar_cliente();
 
     if (pagamento == 1)
     {
-        cout << "1- à vista" << endl
-             << "parcelado" << endl;
+        cout << "1- À vista" << endl
+             << "2- Parcelado" << endl;
         cin >> pgtCartao;
 
         if (pgtCartao == 1)
@@ -104,10 +110,7 @@ void passarCompra()
     }
     else if (pagamento == 3)
     {
-        //arquivo com lista de clientes;
-        //  verifica_cliente();
-        //  senao
-        //  cadastrar_cliente();
+        //clienteAtual.saldoDevedor = clienteAtual.saldoDevedor+valorTotal;
     }
 }
 
@@ -120,12 +123,21 @@ void interfaceCliente()
          << "   >";
 }
 
+void carregarClientes()
+{
+    ifstream cli("clientes.dat", ios::binary);
+}
+
 void cadastrarCliente(cliente &dados)
 {
     cout << "nome: " << endl;
     cin >> dados.nome;
     cout << "cpf: " << endl;
     cin >> dados.cpf;
+}
+
+void quitarDivida()
+{
 }
 
 void removerClientes()
@@ -155,17 +167,14 @@ void exibirClientes()
             {
                 if (opcaoCliente == 1)
                 {
-                    cout << "caso 1";
                     //cadastrarCliente();
                 }
                 else if (opcaoCliente == 2)
                 {
-                    cout << "caso 2";
                     //removerClientes();
                 }
                 else if (opcaoCliente == 3)
                 {
-                    cout << " caso 3";
                     //alterarCliente();
                 }
             }
@@ -192,7 +201,12 @@ void verificar(int acao)
     }
     else if (acao == 3)
     {
+
         // cadastrarCliente();
+    }
+    else
+    {
+        // quitarDivida();
     }
 }
 
