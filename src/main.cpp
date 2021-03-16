@@ -7,12 +7,21 @@ using namespace std;
 
 struct cliente
 {
+    long int cpf;
     string nome;
-    int cpf;
     float saldoDevedor;
     float valorCompras;
     
 };
+// isso aqui é só de teste (no caso a gente vai imprimir do arquivo)
+void imprimeVetor(cliente* clientes, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        cout<< clientes[i].cpf << " "
+            << clientes[i].nome << " "
+            << clientes[i].saldoDevedor << endl;
+
+    }
+}
 
 // ######################
 // aqui eu só coloquei a estrutura (copiei do slide de buscas). a gente tem que ver como 
@@ -33,26 +42,48 @@ bool busca(cliente* clientes, int cpfCliente, int &posicaoCliente) {
     return true;
 }
 
-void cadastrarCliente(cliente &dados)
-{
-    cout << "nome: " << endl;
-    cin >> dados.nome;
-    cout << "cpf: " << endl;
-    cin >> dados.cpf;
-    dados.saldoDevedor = 0;
-    dados.valorCompras = 0;
+// realoca vetor clientes
+void realoca(cliente* &clientes, int &tamanho, int &contador) {
+    cliente* auxiliarClientes = new cliente[tamanho];
+    for(int i = 0; i < contador; i++) {
+        auxiliarClientes[i] = clientes[i];
+    }
+
+    delete[] clientes;
+    
+    tamanho += 1;
+    clientes = new cliente[tamanho];
+    
+    for(int i = 0; i < contador; i++) {
+        clientes[i] = auxiliarClientes[i];
+    }
+    
+    delete[] auxiliarClientes;
+    auxiliarClientes = NULL;
 }
 
-void passarCompra(cliente* clientes, int tamanho)
+void cadastrarCliente(cliente* &clientes, int &tamanho, int &contador)
+{   
+    // toda vez que for chamada a funcao cadastrar, será testado o tamanho com o contador
+    if (tamanho == contador) {
+        realoca(clientes, tamanho, contador);
+    }
+
+    cout << "cpf: ";
+    cin >> clientes[contador].cpf;
+    cout << "nome: ";
+    cin >> clientes[contador].nome;
+    clientes[contador].saldoDevedor = 0;
+    contador += 1;
+}
+
+void passarCompra(cliente* &clientes, int tamanho)
 {
-    // compra compraAtual; //variavel que recebe tudo
     cliente auxiliarCliente;
     int pagamento;
-    // teste:
     float valorProduto;
     int i = 0;
     float valorTotal = 0; //valor total da compra
-    // fim teste;
 
     while (valorProduto != 0)
     {
@@ -68,11 +99,6 @@ void passarCompra(cliente* clientes, int tamanho)
          << "1- À vista" << endl
          << "2- À prazo" << endl;
     cin >> pagamento;
-
-    //  arquivo com lista de clientes;
-    //  verifica_cliente();
-    //  senao
-    //  cadastrar_cliente();
     int cadastradoOuNao;
     if (pagamento == 1)
     {
@@ -121,34 +147,26 @@ void interfaceCliente()
          << "   > ";
 }
 
-void cadastrarCliente(cliente* clientes, int tamanho)
-{
-    cliente clientes[tamanho-1];
-    cout << "nome: " << endl;
-    cin >> clientes[tamanho-1].nome;
-    cout << "cpf: " << endl;
-    cin >> clientes[tamanho-1].cpf;
-    clientes[tamanho-1].saldoDevedor = 0;
-    clientes[tamanho-1].valorCompras = 0;
-}
-
+// pra buscar as pessoas, a gente vai usar o cpf, pois é a unica caracteristica que não repete
 void quitarDivida()
 {
+    // vai procurar no arquivo 
 }
 
 void removerClientes()
 {
+    // vai procurar no arquivo pra remover os campos
 }
 
 void alterarCliente()
 {
+    // a gente vai precisar achar no arquivo, depois alterar o campo
 }
 
-void exibirClientes(cliente* clientes, int tamanho)
+void exibirClientes(cliente* &clientes, int &tamanho, int &contador)
 {
     bool sair = false;
     int opcaoCliente;
-
     while (!sair)
     {
         interfaceCliente();
@@ -163,7 +181,7 @@ void exibirClientes(cliente* clientes, int tamanho)
             {
                 if (opcaoCliente == 1)
                 {
-                    cadastrarCliente(clientes, tamanho);
+                    cadastrarCliente(clientes, tamanho, contador);
                 }
                 else if (opcaoCliente == 2)
                 {
@@ -184,7 +202,7 @@ void exibirClientes(cliente* clientes, int tamanho)
     }
 }
 
-void verificar(int acao, cliente* clientes, int tamanho)
+void verificar(int acao, cliente* &clientes, int &tamanho, int &contador)
 {
 
     if (acao == 1)
@@ -193,12 +211,12 @@ void verificar(int acao, cliente* clientes, int tamanho)
     }
     else if (acao == 2)
     {
-        exibirClientes(clientes, tamanho);
+        imprimeVetor(clientes, tamanho);
+        exibirClientes(clientes, tamanho, contador);
     }
     else if (acao == 3)
     {
-
-        // cadastrarCliente();
+        cadastrarCliente(clientes, tamanho, contador);
     }
     else
     {
@@ -219,7 +237,7 @@ void menuSelecao()
 
 // #####################################################################
 // aqui foi o último lugar que eu mexi
-void salvarDados(cliente* clientes, int tamanho) {
+void salvarDados(cliente* &clientes, int &tamanho) {
     // como tá tudo em string ou inteiro, a gente precisa passar pra char;
     ofstream arquivo("dados.dat", ios::binary);
     char caractere[1];
@@ -238,8 +256,8 @@ int main()
 {
     int tamanho = 1;
     cliente* clientes = new cliente[tamanho];
-    // carregarClientes(clientes, tamanho); talvez a gente não precise colocar na memoria mesmo
-    int acao = 0;
+    int contador = 0; //vezes que foi adionado um elemento no vetor (quando os clientes forem salvos ele eh resetado)
+    int acao;
     bool sair = false;
 
     while (!sair)
@@ -254,7 +272,7 @@ int main()
             }
             else
             {
-                verificar(acao, clientes, tamanho);
+                verificar(acao, clientes, tamanho, contador);
             }
         }
         else
