@@ -12,10 +12,15 @@ struct cliente
 };
 // isso aqui é só de teste (no caso a gente vai imprimir do arquivo) 
 void exibeClientes(cliente* &clientes, int tamanho) {
-    for (int i = 0; i < tamanho; i++) {
-        cout<< clientes[i].cpf << " "
-            << clientes[i].nome << " "
-            << clientes[i].saldoDevedor << endl;
+    cliente clienteAuxiliar;
+    fstream arquivo("dados.dat", ios::in|ios::ate); //abre o arquivo para leitura posicionando na ultima posicao
+    int quantRegistros = arquivo.tellg()/sizeof(cliente);
+    for(int i = 0; i < quantRegistros; i++) {
+        arquivo.seekg(i*sizeof(cliente));
+        arquivo.read((char*)&clienteAuxiliar, sizeof(cliente));
+        cout<< clienteAuxiliar.cpf << " "
+            << clienteAuxiliar.nome << " "
+            << clienteAuxiliar.saldoDevedor << endl;
     }
 }
 
@@ -108,7 +113,7 @@ void passarCompra(cliente* &clientes, int tamanho)
         i++;
     }
 
-    cout << "O valor total da compra é de " << auxiliarCliente.saldoDevedor << "." << endl
+    cout << "O valor total da compra é de: " << auxiliarCliente.saldoDevedor << "." << endl
          << "Qual a forma de pagamento? " << endl
          << "1- À vista" << endl
          << "2- À prazo" << endl;
@@ -131,9 +136,11 @@ void passarCompra(cliente* &clientes, int tamanho)
                 cout<<"Digite o CPF do cliente: ";
                 cin>>cpfCliente;
                 if (busca(clientes, cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true ou false
-                    cout<<auxiliarCliente.nome<<endl;
+                    // isso vai ter que mudar pra uma funçao altera
+                    // auxiliarCliente.saldoDevedor = 
+                    // cout<<auxiliarCliente.nome<<endl;
                 } else {
-                    cout<<"O cliente não foi encontrado. Por favor, cadastre o e passe a compra novamente!"<<endl;
+                    cout<<"O cliente não foi encontrado. Por favor, cadastre-o e passe a compra novamente!"<<endl;
                 }
             } else {
                 cout<<"Nao eh possivel comprar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
@@ -160,7 +167,10 @@ void interfaceCliente()
 // pra buscar as pessoas, a gente vai usar o cpf, pois é a unica caracteristica que não repete
 void quitarDivida()
 {
-    // vai procurar no arquivo 
+    // vai chamar busca;
+    // vai achar posição;
+    // vai chamar o altera;
+    // atribui o valor zero;
 }
 
 // eh o ultimo slide sobre arquivos binários
@@ -171,10 +181,18 @@ void removerClientes()
 
 
 // tem no slide
-void alterarCliente()
-{
-    // a gente vai precisar achar no arquivo, depois alterar o campo
-}
+// void alterarCliente()
+// {
+//     fstream arquivo("dados.dat", ios::in|ios::out|ios::app); //abre o arquivo para ser modificado
+//     arquivo.seekp((posicaoCliente)*sizeof(cliente)); 
+//     arquivo.write((char*) &auxiliarCliente.saldoDevedor, sizeof(18));
+//     arquivo.seekg(posicaoCliente*sizeof(cliente));
+//     arquivo.read((char*) &auxiliarCliente, sizeof(cliente));
+//     cout<<auxiliarCliente.cpf<<" ";
+//     cout<<auxiliarCliente.nome<<" ";
+//     cout<<auxiliarCliente.saldoDevedor<<endl;
+//     // a gente vai precisar achar no arquivo, depois alterar o campo
+// }
 
 // vou ter que mexer aqui para ver qual eh a real importancia dessa funcao
 
