@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-// #include <cmath>
 using namespace std;
 
 struct cliente
@@ -10,22 +9,19 @@ struct cliente
     long cpf;
     char nome[10];
     float saldoDevedor;
-    float valorCompras;
 };
 // isso aqui é só de teste (no caso a gente vai imprimir do arquivo) 
-// void imprimeVetor(cliente* clientes, int tamanho) {
-//     for (int i = 0; i < tamanho; i++) {
-//         cout<< clientes[i].cpf << " "
-//             << clientes[i].nome << " "
-//             << clientes[i].saldoDevedor << endl;
-
-//     }
-// }
+void exibeClientes(cliente* &clientes, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        cout<< clientes[i].cpf << " "
+            << clientes[i].nome << " "
+            << clientes[i].saldoDevedor << endl;
+    }
+}
 
 // vai ter uma nova utilidade!!!
 // realoca vetor clientes
-void realoca(cliente* &clientes, int &tamanho, int &contador, bool limparMemoria) {
-
+void realocar(cliente* &clientes, int &tamanho, int &contador, bool limparMemoria) {
     if(!limparMemoria) {
         cliente* auxiliarClientes = new cliente[tamanho];
         for(int i = 0; i < contador; i++) {
@@ -54,26 +50,24 @@ void realoca(cliente* &clientes, int &tamanho, int &contador, bool limparMemoria
 
 //funcao que escreve os dados do vetor no arquivo
 void salvarDados(cliente* &clientes, int &tamanho) {
-    ofstream arquivo("dados.dat", ios::binary);
+    ofstream arquivo("dados.dat", ios::binary|ios::app);
     arquivo.write((const char*)(clientes), tamanho*sizeof(cliente));
     bool limparMemoria = true;
     int contador = tamanho-1;
-    realoca(clientes, tamanho, contador, limparMemoria);
+    realocar(clientes, tamanho, contador, limparMemoria);
 }
 
-bool busca(cliente* clientes, long cpfCliente, int &posicaoCliente, cliente &clienteCadastrado) {
+bool busca(cliente* &clientes, long cpfCliente, int &posicaoCliente, cliente &clienteCadastrado) {
     fstream arquivo("dados.dat", ios::in|ios::ate); //abre o arquivo para leitura posicionando na ultima posicao
     int quantRegistros = arquivo.tellg()/sizeof(cliente);
-    // cliente clienteCadastrado;
     int i = 0;
-    while(i <= quantRegistros and clienteCadastrado.cpf != cpfCliente) {
+    while(i <= quantRegistros) {
         arquivo.seekg(i*sizeof(cliente));
         arquivo.read((char*)&clienteCadastrado, sizeof(cliente));
+        if(clienteCadastrado.cpf == cpfCliente) {
+            return true;
+        }  
         i++;
-    }
-
-    if(clienteCadastrado.cpf == cpfCliente) {
-        return true;
     }
     return false;
 }
@@ -84,7 +78,8 @@ void cadastrarCliente(cliente* &clientes, int &tamanho, int &contador)
     // toda vez que for chamada a funcao cadastrar, será testado o tamanho com o contador
     if (tamanho == contador) {
         limparDados = false;
-        realoca(clientes, tamanho, contador, limparDados);
+        cout<<"nem chega a chamar??";
+        realocar(clientes, tamanho, contador, limparDados);
     }
 
     cout << "cpf: ";
@@ -135,11 +130,10 @@ void passarCompra(cliente* &clientes, int tamanho)
             if(cadastradoOuNao == 1) {
                 cout<<"Digite o CPF do cliente: ";
                 cin>>cpfCliente;
-                if (busca(clientes, cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true
+                if (busca(clientes, cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true ou false
                     cout<<auxiliarCliente.nome<<endl;
-                    // cout<<cliente;
                 } else {
-                    cout<<"Nao eh possivel comprar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
+                    cout<<"O cliente não foi encontrado. Por favor, cadastre o e passe a compra novamente!"<<endl;
                 }
             } else {
                 cout<<"Nao eh possivel comprar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
@@ -183,7 +177,9 @@ void alterarCliente()
 }
 
 // vou ter que mexer aqui para ver qual eh a real importancia dessa funcao
-void exibirClientes(cliente* &clientes, int &tamanho, int &contador)
+
+// funcao que contém o menu para selecionar uma ação em relação a exibição, alteração ou exclusão
+void menuCliente(cliente* &clientes, int &tamanho, int &contador)
 {
     bool sair = false;
     int opcaoCliente;
@@ -231,8 +227,8 @@ void verificar(int acao, cliente* &clientes, int &tamanho, int &contador)
     }
     else if (acao == 2)
     {
-        // imprimeVetor(clientes, tamanho); isso eh soh pra testes!! ()
-        exibirClientes(clientes, tamanho, contador);
+        exibeClientes(clientes, tamanho); //isso eh soh pra testes!! ()
+        menuCliente(clientes, tamanho, contador);
     }
     else if (acao == 3)
     {
