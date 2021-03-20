@@ -1,72 +1,90 @@
+//Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cmath>
+// #include <cmath>
 using namespace std;
-//Hélio Henrique Medeiros Silva and Maurício Martins Damasceno;
 
 struct cliente
 {
-    long int cpf;
-    string nome;
+    long cpf;
+    char nome[10];
     float saldoDevedor;
     float valorCompras;
-    
 };
-// isso aqui é só de teste (no caso a gente vai imprimir do arquivo)
-void imprimeVetor(cliente* clientes, int tamanho) {
-    for (int i = 0; i < tamanho; i++) {
-        cout<< clientes[i].cpf << " "
-            << clientes[i].nome << " "
-            << clientes[i].saldoDevedor << endl;
+// isso aqui é só de teste (no caso a gente vai imprimir do arquivo) 
+// void imprimeVetor(cliente* clientes, int tamanho) {
+//     for (int i = 0; i < tamanho; i++) {
+//         cout<< clientes[i].cpf << " "
+//             << clientes[i].nome << " "
+//             << clientes[i].saldoDevedor << endl;
 
-    }
-}
+//     }
+// }
 
-// ######################
-// aqui eu só coloquei a estrutura (copiei do slide de buscas). a gente tem que ver como 
-// vai procurar em um arquivo
-bool busca(cliente* clientes, int cpfCliente, int &posicaoCliente) {
-//     int K, N = 10; precisa implementar com o arquivo depois
-//     int V[N];
-//     int i, posicao = -1;
-//     for (i = 0; i < N; i++) cin >> V[i];
-//     cin >> K;
-//     while ((i < N) and (V[i] < K))
-//    	 i++;
-//     if ((i != N) and (V[i] == K)) {
-//    	 posicao = i;
-    //    } else {
-    //        return false
-    //    }
-    return true;
-}
-
+// vai ter uma nova utilidade!!!
 // realoca vetor clientes
-void realoca(cliente* &clientes, int &tamanho, int &contador) {
-    cliente* auxiliarClientes = new cliente[tamanho];
-    for(int i = 0; i < contador; i++) {
-        auxiliarClientes[i] = clientes[i];
+void realoca(cliente* &clientes, int &tamanho, int &contador, bool limparMemoria) {
+
+    if(!limparMemoria) {
+        cliente* auxiliarClientes = new cliente[tamanho];
+        for(int i = 0; i < contador; i++) {
+            auxiliarClientes[i] = clientes[i];    
+        }
+
+        delete[] clientes;
+        
+        tamanho += 1;
+        clientes = new cliente[tamanho];
+        
+        for(int i = 0; i < contador; i++) {
+            clientes[i] = auxiliarClientes[i];
+        }
+        
+        delete[] auxiliarClientes;
+        auxiliarClientes = NULL;
+    } else {
+        delete[] clientes;
+        contador = 0;
+        tamanho = 1;
+        clientes = new cliente[tamanho];
+    }
+}
+
+
+//funcao que escreve os dados do vetor no arquivo
+void salvarDados(cliente* &clientes, int &tamanho) {
+    ofstream arquivo("dados.dat", ios::binary);
+    arquivo.write((const char*)(clientes), tamanho*sizeof(cliente));
+    bool limparMemoria = true;
+    int contador = tamanho-1;
+    realoca(clientes, tamanho, contador, limparMemoria);
+}
+
+bool busca(cliente* clientes, long cpfCliente, int &posicaoCliente, cliente &clienteCadastrado) {
+    fstream arquivo("dados.dat", ios::in|ios::ate); //abre o arquivo para leitura posicionando na ultima posicao
+    int quantRegistros = arquivo.tellg()/sizeof(cliente);
+    // cliente clienteCadastrado;
+    int i = 0;
+    while(i <= quantRegistros and clienteCadastrado.cpf != cpfCliente) {
+        arquivo.seekg(i*sizeof(cliente));
+        arquivo.read((char*)&clienteCadastrado, sizeof(cliente));
+        i++;
     }
 
-    delete[] clientes;
-    
-    tamanho += 1;
-    clientes = new cliente[tamanho];
-    
-    for(int i = 0; i < contador; i++) {
-        clientes[i] = auxiliarClientes[i];
+    if(clienteCadastrado.cpf == cpfCliente) {
+        return true;
     }
-    
-    delete[] auxiliarClientes;
-    auxiliarClientes = NULL;
+    return false;
 }
 
 void cadastrarCliente(cliente* &clientes, int &tamanho, int &contador)
 {   
+    bool limparDados;
     // toda vez que for chamada a funcao cadastrar, será testado o tamanho com o contador
     if (tamanho == contador) {
-        realoca(clientes, tamanho, contador);
+        limparDados = false;
+        realoca(clientes, tamanho, contador, limparDados);
     }
 
     cout << "cpf: ";
@@ -77,21 +95,22 @@ void cadastrarCliente(cliente* &clientes, int &tamanho, int &contador)
     contador += 1;
 }
 
+// funcao que passa a compra do usuario
 void passarCompra(cliente* &clientes, int tamanho)
 {
     cliente auxiliarCliente;
     int pagamento;
     float valorProduto;
     int i = 0;
-    float valorTotal = 0; //valor total da compra
+    // float valorTotal = 0; //valor total da compra
 
     while (valorProduto != 0)
     {
-            cout << "informe o preco do produto separado por ponto flutuante. Caso nao haja mais produtos, digite 0."<<endl
-                 << ">";
-            cin >> valorProduto;
-            valorTotal += valorProduto;
-            i++;
+        cout<< "informe o preco do produto separado por ponto flutuante. Caso nao haja mais produtos, digite 0."<<endl
+            << ">";
+        cin >> valorProduto;
+        auxiliarCliente.saldoDevedor += valorProduto;
+        i++;
     }
 
     cout << "O valor total da compra é de " << auxiliarCliente.saldoDevedor << "." << endl
@@ -106,38 +125,34 @@ void passarCompra(cliente* &clientes, int tamanho)
     }
     else if (pagamento == 2)
     {
-        int cpfCliente;
+        long cpfCliente;
         int posicaoCliente;
         cout<< "o cliente é cadastrado? "<<endl
             << "1-sim"<<endl
             << "2-nao"<<endl;
         cin>> cadastradoOuNao;
-        bool sair = false;
-        while(!sair) {
-            if (cadastradoOuNao >= 1 and cadastradoOuNao <= 2){
+        if (cadastradoOuNao >= 1 and cadastradoOuNao <= 2){
             if(cadastradoOuNao == 1) {
                 cout<<"Digite o CPF do cliente: ";
                 cin>>cpfCliente;
-                if (busca(clientes, cpfCliente, posicaoCliente)) { //vai retornar um true
-                    clientes[posicaoCliente].saldoDevedor += auxiliarCliente.saldoDevedor;
+                if (busca(clientes, cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true
+                    cout<<auxiliarCliente.nome<<endl;
+                    // cout<<cliente;
                 } else {
-                    cout<<"Nao eh possivel passar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
-                    sair = true;
+                    cout<<"Nao eh possivel comprar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
                 }
             } else {
-                cout<<"Nao eh possivel passar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
-                sair = true;
+                cout<<"Nao eh possivel comprar a prazo sem ser cadastrado. Por favor, cadastre o cliente e depois passe a compra novamente!"<<endl;
             }
-            } else {
-                cout << "[ERRO] digite um valor valido! (1 ou 2) " << endl;
-                cin.clear();  //Limpa a flag de erro quando há falha no parse do valor entrado
-                cin.ignore(); //Limpa o buffer
-            }    
-        }
-        
+        } else {
+            cout << "[ERRO] digite um valor valido! (1 ou 2) " << endl;
+            cin.clear();  //Limpa a flag de erro quando há falha no parse do valor entrado
+            cin.ignore(); //Limpa o buffer
+        }    
     }
 }
 
+// funcao imprime a interface da secao de cadastro
 void interfaceCliente()
 {
     cout << "   1- Cadastrar cliente" << endl
@@ -147,22 +162,27 @@ void interfaceCliente()
          << "   > ";
 }
 
+// isso tambem faz parte de alterar o campo do usuário
 // pra buscar as pessoas, a gente vai usar o cpf, pois é a unica caracteristica que não repete
 void quitarDivida()
 {
     // vai procurar no arquivo 
 }
 
+// eh o ultimo slide sobre arquivos binários
 void removerClientes()
 {
     // vai procurar no arquivo pra remover os campos
 }
 
+
+// tem no slide
 void alterarCliente()
 {
     // a gente vai precisar achar no arquivo, depois alterar o campo
 }
 
+// vou ter que mexer aqui para ver qual eh a real importancia dessa funcao
 void exibirClientes(cliente* &clientes, int &tamanho, int &contador)
 {
     bool sair = false;
@@ -202,28 +222,32 @@ void exibirClientes(cliente* &clientes, int &tamanho, int &contador)
     }
 }
 
+// funcao que verifica qual foi a acao escolhida pelo usuário
 void verificar(int acao, cliente* &clientes, int &tamanho, int &contador)
 {
-
     if (acao == 1)
     {
         passarCompra(clientes, tamanho);
     }
     else if (acao == 2)
     {
-        imprimeVetor(clientes, tamanho);
+        // imprimeVetor(clientes, tamanho); isso eh soh pra testes!! ()
         exibirClientes(clientes, tamanho, contador);
     }
     else if (acao == 3)
     {
         cadastrarCliente(clientes, tamanho, contador);
     }
-    else
+    else if (acao == 4)
     {
         // quitarDivida();
     }
+    else {
+        salvarDados(clientes, tamanho);
+    }
 }
 
+// funcao que imprime a interface para mostrar as primeiras acoes
 void menuSelecao()
 {
     cout << "Escolha uma acao (digite apenas um numero): " << endl
@@ -231,25 +255,9 @@ void menuSelecao()
          << "   2- Exibir clientes cadastrados" << endl
          << "   3- Cadastrar cliente" << endl
          << "   4- Quitar Divida" <<endl
-         << "   5- Sair" << endl
+         << "   5- Salvar novos cadastrados" <<endl
+         << "   6- Sair" << endl
          << "   > ";
-}
-
-// #####################################################################
-// aqui foi o último lugar que eu mexi
-void salvarDados(cliente* &clientes, int &tamanho) {
-    // como tá tudo em string ou inteiro, a gente precisa passar pra char;
-    ofstream arquivo("dados.dat", ios::binary);
-    char caractere[1];
-
-    //escreve o nome
-    for(int i = 0; i < tamanho; i++) {
-        for (int j = 0; j < (clientes[i].nome).size(); i++) {
-            caractere[0] = clientes[i].nome[j];
-            arquivo.write(caractere,1);
-        }
-    }
-
 }
 
 int main()
@@ -264,9 +272,9 @@ int main()
     {
         menuSelecao();
         cin >> acao;
-        if (acao >= 1 and acao <= 5)
+        if (acao >= 1 and acao <= 6)
         {
-            if (acao == 5)
+            if (acao == 6)
             {
                 sair = true;
             }
