@@ -10,6 +10,8 @@ struct cliente
     char nome[10];
     float saldoDevedor;
 };
+// vai precisar fazer uma funcao que calcula a quantidade de registros que existem no arquivo (eh uma operacao que repete muito!)
+
 // isso aqui é só de teste (no caso a gente vai imprimir do arquivo) 
 void exibeClientes(cliente* &clientes, int tamanho) {
     cliente clienteAuxiliar;
@@ -62,15 +64,16 @@ void salvarDados(cliente* &clientes, int &tamanho) {
     realocar(clientes, tamanho, contador, limparMemoria);
 }
 
-bool busca(cliente* &clientes, long cpfCliente, int &posicaoCliente, cliente &clienteCadastrado) {
+bool busca(long cpfCliente, int &posicaoCliente, cliente &clienteCadastrado) {
     fstream arquivo("dados.dat", ios::in|ios::ate); //abre o arquivo para leitura posicionando na ultima posicao
     int quantRegistros = arquivo.tellg()/sizeof(cliente);
     int i = 0;
-    while(i <= quantRegistros) {
+    while(i < quantRegistros) {
         arquivo.seekg(i*sizeof(cliente));
         arquivo.read((char*)&clienteCadastrado, sizeof(cliente));
         if(clienteCadastrado.cpf == cpfCliente) {
-            return true;
+            posicaoCliente = i;
+            return true; //retorna true caso tenha encontrado. Quando encontrado ele já passa por referencia a posicao do cliente
         }  
         i++;
     }
@@ -83,7 +86,6 @@ void cadastrarCliente(cliente* &clientes, int &tamanho, int &contador)
     // toda vez que for chamada a funcao cadastrar, será testado o tamanho com o contador
     if (tamanho == contador) {
         limparDados = false;
-        cout<<"nem chega a chamar??";
         realocar(clientes, tamanho, contador, limparDados);
     }
 
@@ -135,7 +137,8 @@ void passarCompra(cliente* &clientes, int tamanho)
             if(cadastradoOuNao == 1) {
                 cout<<"Digite o CPF do cliente: ";
                 cin>>cpfCliente;
-                if (busca(clientes, cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true ou false
+                if (busca(cpfCliente, posicaoCliente, auxiliarCliente)) { //vai retornar um true ou false
+
                     // isso vai ter que mudar pra uma funçao altera
                     // auxiliarCliente.saldoDevedor = 
                     // cout<<auxiliarCliente.nome<<endl;
@@ -174,10 +177,34 @@ void quitarDivida()
 }
 
 // eh o ultimo slide sobre arquivos binários
-void removerClientes()
-{
-    // vai procurar no arquivo pra remover os campos
+void removerCliente(fstream &arquivo)
+{  
+    cliente clienteSeraExcluido;
+    long cpfCliente;
+    cout<<"Digite o cpf do cliente a ser excluido: "
+        <<">  ";
+    cin>>cpfCliente;
+    cout<<endl;
+    int posicaoCliente;
+    if(busca(cpfCliente, posicaoCliente, clienteSeraExcluido)) { //se o resultado de busca for verdadeiro, o cliente existe
+        cout<<clienteSeraExcluido.cpf <<" "
+            <<clienteSeraExcluido.nome << " "
+            <<clienteSeraExcluido.saldoDevedor<<endl;
+        // arquivo.seekg(0, ios::end);
+        int quantRegistros = arquivo.tellg()/sizeof(cliente);
+        
+        for (int i = posicaoCliente + 1; i < quantRegistros; i++){
+            arquivo.seekp((i)*sizeof(cliente));
+            arquivo.read((char*)(&clienteSeraExcluido), sizeof(cliente));
+            arquivo.seekp((i-1)*sizeof(cliente)); 
+            arquivo.write((char*)(&clienteSeraExcluido), sizeof(cliente));  
+        }    
+     } else {
+         cout<<"cliente não encontrado."<<endl;
+     }
 }
+
+    // vai procurar no arquivo pra remover os campos
 
 
 // tem no slide
@@ -219,7 +246,8 @@ void menuCliente(cliente* &clientes, int &tamanho, int &contador)
                 }
                 else if (opcaoCliente == 2)
                 {
-                    //removerClientes();
+                    fstream arquivo("dados.dat", ios::in|ios::ate|ios::out); //abre o arquivo para manipulacao
+                    removerCliente(arquivo);
                 }
                 else if (opcaoCliente == 3)
                 {
@@ -306,7 +334,9 @@ int main()
 
     } //fim do while
 
-    salvarDados(clientes, tamanho);
+    if (contador != 0) {
+        salvarDados(clientes, tamanho);
+    }
 
     return 0;
 }
